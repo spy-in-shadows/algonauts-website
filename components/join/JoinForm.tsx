@@ -36,7 +36,7 @@ export default function JoinForm() {
 
     try {
       // POST request to Formspree placeholder endpoint
-      const res = await fetch("https://formspree.io/f/YOUR_FORMSPREE_ID", {
+      const res = await fetch("https://formspree.io/f/mnpabdzb", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
