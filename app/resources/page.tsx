@@ -150,12 +150,14 @@ export default function Resources() {
                 <details
                   open={isOpen}
                   className="group"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toggleSection(section.id);
-                  }}
                 >
-                  <summary className="flex items-center justify-between p-6 cursor-pointer font-heading font-semibold text-base md:text-lg text-fg tracking-wide select-none focus:outline-none">
+                  <summary
+                    className="flex items-center justify-between p-6 cursor-pointer font-heading font-semibold text-base md:text-lg text-fg tracking-wide select-none focus:outline-none"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleSection(section.id);
+                    }}
+                  >
                     <div className="flex items-center gap-4">
                       <span>{section.topic}</span>
                       <RatingColorTag rating={section.ratingMin} />
