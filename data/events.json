@@ -1,0 +1,51 @@
+{
+  "upcoming": [
+    {
+      "id": "event-1",
+      "title": "Algonauts Insomnia Round 14",
+      "description": "Our signature 3-hour competitive programming division contest. High-quality original problems prepared by our coordinators.",
+      "date": "2026-08-18T18:00:00Z",
+      "durationMinutes": 180,
+      "location": "Online (Codeforces Custom Room)"
+    },
+    {
+      "id": "event-2",
+      "title": "Advanced Dynamic Programming Workshop",
+      "description": "Deep dive into convex hull trick, divide and conquer optimization, and tree DP. Bring your laptops.",
+      "date": "2026-08-25T14:00:00Z",
+      "durationMinutes": 120,
+      "location": "Seminar Hall C / Discord"
+    },
+    {
+      "id": "event-3",
+      "title": "Introduction to Graph Algorithms",
+      "description": "Session covering BFS/DFS, Dijkstra, and basic Tree traversals for beginners and intermediates.",
+      "date": "2026-09-02T16:00:00Z",
+      "durationMinutes": 90,
+      "location": "Lab 4 / Discord"
+    }
+  ],
+  "past": [
+    {
+      "id": "past-1",
+      "date": "2026-07-28",
+      "name": "Algonauts Insomnia Round 13",
+      "winners": ["ecnerwala", "Benq"],
+      "editorialUrl": "/blog/dynamic-programming-tricks"
+    },
+    {
+      "id": "past-2",
+      "date": "2026-07-14",
+      "name": "Summer Sprint Contest 2",
+      "winners": ["tourist"],
+      "editorialUrl": "https://codeforces.com/blog/entry/12345"
+    },
+    {
+      "id": "past-3",
+      "date": "2026-06-30",
+      "name": "Algonauts Insomnia Round 12",
+      "winners": ["Monogon"],
+      "editorialUrl": "/blog/dynamic-programming-tricks"
+    }
+  ]
+}

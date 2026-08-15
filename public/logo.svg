@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Tall triangle (A-shape / rocket / peak) with swoosh carved in right leg -->
+  <path d="M50 10 L20 90 H38 L50 38 C53 45 56 52 62 62 C70 74 78 82 88 90 H70 C62 82 56 72 53 60 C50 48 50 32 50 10 Z" fill="white" />
+  <!-- Splitted inner peak -->
+  <path d="M54 55 C58 64 62 76 66 90 H56 C52 78 49 68 54 55 Z" fill="white" opacity="0.6" />
+</svg>

@@ -1,0 +1,59 @@
+---
+title: Advanced Dynamic Programming Optimizations
+author: Andrew He (ecnerwala)
+date: 2026-08-08
+excerpt: A walkthrough on modern dynamic programming optimization techniques including Divide & Conquer and Convex Hull tricks.
+readTime: 6 min read
+---
+
+In competitive programming, optimization of Dynamic Programming (DP) relations is a key differentiator in high-rating rounds. 
+
+Often, you might encounter a standard recurrence of the form:
+$$dp[i] = \min_{j < i} \{ dp[j] + C(j, i) \}$$
+
+Computing this naively takes $O(N^2)$ time. However, if the cost function $C(j, i)$ satisfies certain mathematical conditions (like the Quadrangle Inequality), we can optimize the computation to $O(N \log N)$ or even $O(N)$.
+
+### Divide and Conquer Optimization
+
+We can apply Divide & Conquer optimization when the transition point $opt[i]$ is monotonic, i.e., $opt[i] \le opt[i+1]$ for all $i$.
+
+Here is a standard C++ template for Divide and Conquer DP:
+
+```cpp
+#include <iostream>
+#include <vector>
+
+const long long INF = 1e18;
+std::vector<long long> dp_prev, dp_curr;
+
+long long C(int j, int i) {
+    // Returns cost of transition from j to i
+    return 1LL * (i - j) * (i - j); // Sample cost
+}
+
+void compute(int l, int r, int opt_l, int opt_r) {
+    if (l > r) return;
+    int mid = (l + r) / 2;
+    int best_j = -1;
+    dp_curr[mid] = INF;
+
+    for (int j = opt_l; j <= std::min(mid, opt_r); ++j) {
+        long long val = dp_prev[j] + C(j, mid);
+        if (val < dp_curr[mid]) {
+            dp_curr[mid] = val;
+            best_j = j;
+        }
+    }
+
+    compute(l, mid - 1, opt_l, best_j);
+    compute(mid + 1, r, best_j, opt_r);
+}
+```
+
+### Try it out!
+
+Practice applying these optimizations on this challenging problem:
+
+<ProblemCard id="1899G" title="Unusual Entertainment" rating={2000} tags={["graphs", "trees", "data structures"]} />
+
+If you solve it, your status rating delta on Codeforces will climb. Happy coding!
