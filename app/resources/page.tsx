@@ -24,7 +24,7 @@ const ROADMAP: RoadmapSection[] = [
     ratingMin: 1000,
     resources: [
       { label: "CSES Sorting & Searching Problemset", href: "https://cses.fi/problemset/", source: "CSES" },
-      { label: "Prefix Sum Basics & Applications", href: "https://codeforces.com/blog/entry/84164", source: "Codeforces Blog" },
+      { label: "Prefix Sum Basics & Applications", href: "https://codeforces.com/blog/entry/146389", source: "Codeforces Blog" },
       { label: "USACO Guide: Prefix Sums Introduction", href: "https://usaco.guide/silver/prefix-sums?lang=cpp", source: "USACO Guide" },
     ],
   },
@@ -35,8 +35,8 @@ const ROADMAP: RoadmapSection[] = [
     ratingMin: 1300,
     resources: [
       { label: "USACO Guide: Binary Search Introduction", href: "https://usaco.guide/silver/binary-search?lang=cpp", source: "USACO Guide" },
-      { label: "Binary Search on Answer Problems", href: "https://codeforces.com/blog/entry/70650", source: "Codeforces" },
-      { label: "Two Pointer Technique walkthroughs", href: "https://leetcode.com/discuss/general-discussion/657922/two-pointers-algorithms-for-competitive-programming", source: "Leetcode Discussion" },
+      { label: "Binary Search on Answer Problems", href: "https://www.geeksforgeeks.org/dsa/binary-search-on-answer-tutorial-with-problems/", source: "GeeksForGeeks" },
+      { label: "Two Pointer Technique walkthroughs", href: "https://www.reddit.com/r/leetcode/comments/18g9383/twopointer_technique_an_indepth_guide_concepts/", source: "Reddit" },
     ],
   },
   {
@@ -45,9 +45,9 @@ const ROADMAP: RoadmapSection[] = [
     description: "Deep dive into nodes, edges, DFS/BFS, topological sorting, and tree representations.",
     ratingMin: 1500,
     resources: [
-      { label: "Dijkstra and Shortest Path sets", href: "https://codeforces.com/problemset?tags=shortest+paths", source: "Codeforces" },
+      { label: "Dijkstra and Shortest Path sets problems", href: "https://codeforces.com/problemset?tags=shortest+paths", source: "Codeforces" },
       { label: "Tree Algorithms Practice", href: "https://cses.fi/problemset/", source: "CSES" },
-      { label: "William Fiset Graph Algorithm series", href: "https://www.youtube.com/playlist?list=PLDV1Zeh2M4Cq5A2Mst1ZeqjJp7rOqT1S3", source: "YouTube Channel" },
+      { label: "William Fiset Graph Algorithm series", href: "https://youtube.com/playlist?list=PLDV1Zeh2NRsDGO4--qE8yH72HFL1Km93P&si=wlnvIsn7CyOq_0lC", source: "YouTube Channel" },
     ],
   },
   {
@@ -57,8 +57,8 @@ const ROADMAP: RoadmapSection[] = [
     ratingMin: 1700,
     resources: [
       { label: "CSES DP Problemset practice", href: "https://cses.fi/problemset/", source: "CSES" },
-      { label: "AtCoder Educational DP Contest", href: "https://atcoder.jp/contests/dp", source: "AtCoder" },
-      { label: "Codeforces DP practice collection", href: "https://codeforces.com/blog/entry/78589", source: "Codeforces" },
+      { label: "AtCoder Educational DP Contest", href: "https://atcoder.jp/contests/dp/tasks", source: "AtCoder" },
+      { label: "Codeforces DP practice collection", href: "https://codeforces.com/blog/entry/67679", source: "Codeforces" },
     ],
   },
   {
@@ -68,8 +68,8 @@ const ROADMAP: RoadmapSection[] = [
     ratingMin: 2100,
     resources: [
       { label: "Segment Tree Templates and Exercises", href: "https://cp-algorithms.com/data_structures/segment_tree.html", source: "CP-Algorithms" },
-      { label: "Convex Hull Optimization guide", href: "https://codeforces.com/blog/entry/63823", source: "Codeforces" },
-      { label: "Heavy Light Decomposition problems", href: "https://codeforces.com/blog/entry/53960", source: "Codeforces" },
+      { label: "Convex Hull Optimization guide", href: "https://codeforces.com/blog/entry/63823", source: "Codeforces Blog" },
+      { label: "Heavy Light Decomposition", href: "https://codeforces.com/blog/entry/81317", source: "Codeforces Blog" },
     ],
   },
 ];
