@@ -10,13 +10,12 @@ export default function NotFound() {
       <main className="flex-grow flex flex-col items-center justify-center py-20 text-center px-6">
         <div className="space-y-6 max-w-md bg-bg-elevated border border-border p-8 rounded-lg select-none">
           {/* Logo mark icon */}
-          <div className="w-14 h-14 mx-auto text-accent-warn opacity-80">
-            <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
-              <path
-                d="M50 10 L20 90 H38 L50 38 C53 45 56 52 62 62 C70 74 78 82 88 90 H70 C62 82 56 72 53 60 C50 48 50 32 50 10 Z"
-                fill="currentColor"
-              />
-            </svg>
+          <div className="w-14 h-14 mx-auto relative opacity-85">
+            <img
+              src="/logo.png"
+              alt="ALGONAUTS Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
 
           <div className="space-y-2">

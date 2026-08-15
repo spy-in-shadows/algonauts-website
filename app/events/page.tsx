@@ -146,7 +146,7 @@ export default function Events() {
                                 className="inline-flex items-center gap-1.5 text-xs text-accent font-semibold hover:underline"
                               >
                                 <FileText size={14} />
-                                <span>Editorial</span>
+                                <span>{contest.editorialUrl.includes("syndicate") ? "Memory Hub" : "Editorial"}</span>
                               </Link>
                             ) : (
                               <a

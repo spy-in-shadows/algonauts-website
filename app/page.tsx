@@ -79,12 +79,11 @@ export default function Home() {
         {/* Bottom CTA block */}
         <section className="py-20 md:py-28 border-t border-border bg-bg-elevated/20 text-center relative overflow-hidden">
           <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none select-none">
-            <svg viewBox="0 0 100 100" fill="none" className="w-[50vw] h-auto">
-              <path
-                d="M50 10 L20 90 H38 L50 38 C53 45 56 52 62 62 C70 74 78 82 88 90 H70 C62 82 56 72 53 60 C50 48 50 32 50 10 Z"
-                fill="currentColor"
-              />
-            </svg>
+            <img
+              src="/logo.png"
+              alt=""
+              className="w-[30vw] h-auto object-contain"
+            />
           </div>
 
           <div className="max-w-[1280px] mx-auto px-6 md:px-8 relative z-10 space-y-6">

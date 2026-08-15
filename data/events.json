@@ -1,51 +1,35 @@
 {
   "upcoming": [
     {
-      "id": "event-1",
-      "title": "Algonauts Insomnia Round 14",
-      "description": "Our signature 3-hour competitive programming division contest. High-quality original problems prepared by our coordinators.",
-      "date": "2026-08-18T18:00:00Z",
-      "durationMinutes": 180,
-      "location": "Online (Codeforces Custom Room)"
-    },
-    {
-      "id": "event-2",
-      "title": "Advanced Dynamic Programming Workshop",
-      "description": "Deep dive into convex hull trick, divide and conquer optimization, and tree DP. Bring your laptops.",
-      "date": "2026-08-25T14:00:00Z",
+      "id": "event-orientation",
+      "title": "Junior CP Orientation Session",
+      "description": "An introduction to the Algonauts club and the competitive programming ecosystem. Learn how to kickstart your coding journey, explore resources, and qualify for official membership.",
+      "date": "2026-08-18T14:30:00Z",
       "durationMinutes": 120,
-      "location": "Seminar Hall C / Discord"
-    },
-    {
-      "id": "event-3",
-      "title": "Introduction to Graph Algorithms",
-      "description": "Session covering BFS/DFS, Dijkstra, and basic Tree traversals for beginners and intermediates.",
-      "date": "2026-09-02T16:00:00Z",
-      "durationMinutes": 90,
-      "location": "Lab 4 / Discord"
+      "location": "Room No. 501"
     }
   ],
   "past": [
     {
-      "id": "past-1",
-      "date": "2026-07-28",
-      "name": "Algonauts Insomnia Round 13",
-      "winners": ["ecnerwala", "Benq"],
-      "editorialUrl": "/blog/dynamic-programming-tricks"
+      "id": "past-group-1",
+      "date": "2026-05-14",
+      "name": "NST-ADYPU Group Contest (Round 684398)",
+      "winners": ["Active Members"],
+      "editorialUrl": "https://codeforces.com/group/OpRo6ek5FO/contest/684398/standings/groupmates/true"
     },
     {
-      "id": "past-2",
-      "date": "2026-07-14",
-      "name": "Summer Sprint Contest 2",
-      "winners": ["tourist"],
-      "editorialUrl": "https://codeforces.com/blog/entry/12345"
+      "id": "past-group-2",
+      "date": "2026-06-12",
+      "name": "NST-ADYPU Group Contest (Round 707916)",
+      "winners": ["Active Members"],
+      "editorialUrl": "https://codeforces.com/group/OpRo6ek5FO/contest/707916/standings/groupmates/true"
     },
     {
-      "id": "past-3",
-      "date": "2026-06-30",
-      "name": "Algonauts Insomnia Round 12",
-      "winners": ["Monogon"],
-      "editorialUrl": "/blog/dynamic-programming-tricks"
+      "id": "past-syndicate",
+      "date": "2026-04-26",
+      "name": "The SYNDICATE",
+      "winners": ["Team Recoil"],
+      "editorialUrl": "/events/the-syndicate"
     }
   ]
 }

@@ -24,7 +24,7 @@ const TIMELINE = [
   {
     date: "April 2025",
     title: "ICPC Regional Representation",
-    description: "Three teams qualified for the ICPC Regionals, with our top team achieving a spot in the top 30 standings.",
+    description: "Two teams qualified for the ICPC Regionals, with our top team achieving a spot in the top 200 standings.",
   },
   {
     date: "July 2026",

@@ -51,19 +51,12 @@ export default function Navbar() {
           {/* Logo & Brand */}
           <Link href="/" className="flex items-center gap-3 group focus:outline-none">
             {/* SVG Logo mark embedded */}
-            <div className="w-8 h-8 text-fg relative">
-              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
-                <path
-                  d="M50 10 L20 90 H38 L50 38 C53 45 56 52 62 62 C70 74 78 82 88 90 H70 C62 82 56 72 53 60 C50 48 50 32 50 10 Z"
-                  fill="currentColor"
-                  className="transition-colors group-hover:text-accent"
-                />
-                <path
-                  d="M54 55 C58 64 62 76 66 90 H56 C52 78 49 68 54 55 Z"
-                  fill="currentColor"
-                  className="opacity-60 transition-colors group-hover:text-accent group-hover:opacity-100"
-                />
-              </svg>
+            <div className="w-8 h-8 relative">
+              <img
+                src="/logo.png"
+                alt="ALGONAUTS Logo"
+                className="w-full h-full object-contain transition-transform group-hover:scale-105"
+              />
             </div>
             <span className="font-heading font-semibold text-lg tracking-wider text-fg transition-colors group-hover:text-accent">
               ALGONAUTS
