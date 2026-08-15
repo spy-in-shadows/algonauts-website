@@ -34,7 +34,7 @@ export default function TeamPage() {
       try {
         const handles = membersData.map((m) => m.handle).filter(Boolean);
         const users = await fetchCFUsers(handles);
-        const userMap = new Map(users.map((u) => [u.handle.toLowerCase(), u]));
+        const userMap = new Map(users.map((u: CodeforcesUser): [string, CodeforcesUser] => [u.handle.toLowerCase(), u]));
         setCfUsers(userMap);
       } catch (e) {
         console.error("Failed to load team ratings from Codeforces API", e);
@@ -107,9 +107,6 @@ export default function TeamPage() {
                     <h4 className="font-heading font-semibold text-base text-fg tracking-wide truncate">
                       {member.name}
                     </h4>
-                    <span className="block font-mono text-[10px] text-accent uppercase tracking-wider font-semibold">
-                      {member.role}
-                    </span>
                   </div>
                 </div>
 

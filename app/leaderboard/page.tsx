@@ -1,8 +1,16 @@
 import Navbar from "@/components/nav/Navbar";
 import Footer from "@/components/nav/Footer";
 import LeaderboardTable from "@/components/leaderboard/LeaderboardTable";
+import membersData from "@/data/members.json";
+import orgHandles from "@/data/org-handles.json";
+import { getLeaderboardData } from "@/lib/codeforces";
 
-export default function Leaderboard() {
+// ISR: rebuild this page at most once every 10 minutes
+export const revalidate = 600;
+
+export default async function Leaderboard() {
+  const members = await getLeaderboardData(membersData, orgHandles);
+
   return (
     <>
       <Navbar />
@@ -18,7 +26,7 @@ export default function Leaderboard() {
         </div>
 
         {/* Live Leaderboard Datatable block */}
-        <LeaderboardTable />
+        <LeaderboardTable initialMembers={members} />
       </main>
       <Footer />
     </>

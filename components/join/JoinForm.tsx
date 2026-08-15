@@ -67,25 +67,26 @@ export default function JoinForm() {
   if (success) {
     return (
       <div className="bg-bg-elevated border border-border rounded-lg p-8 md:p-12 text-center space-y-6 select-none">
-        {/* Animated logo mark drawing (Section 3.2) */}
-        <div className="w-20 h-20 mx-auto text-accent flex items-center justify-center">
-          <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
+        {/* Animated checkmark tick */}
+        <div className="w-20 h-20 mx-auto flex items-center justify-center rounded-full bg-accent/10 border border-accent/20">
+          <svg viewBox="0 0 52 52" fill="none" className="w-12 h-12">
             <motion.path
-              d="M10 90 C30 80 50 60 90 10"
+              d="M14 27 L22 35 L38 17"
               stroke="currentColor"
-              strokeWidth="6"
+              strokeWidth="4"
               strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-accent"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.5, ease: "easeInOut" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
             />
           </svg>
         </div>
 
         <div className="space-y-3">
-          <h2 className="font-heading font-bold text-2xl text-fg tracking-wide flex items-center justify-center gap-2">
-            <CheckCircle2 size={24} className="text-accent" />
-            <span>Contest Registration Confirmed!</span>
+          <h2 className="font-heading font-bold text-2xl text-fg tracking-wide">
+            Contest Registration Confirmed!
           </h2>
           <p className="text-fg-muted font-sans text-sm md:text-base max-w-md mx-auto leading-relaxed">
             Your details have been registered for our next scheduled Recruitment Contest. We will email you the competition rules, timings, and credentials shortly.
@@ -103,7 +104,18 @@ export default function JoinForm() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+    <div className="space-y-12">
+      {/* Title Header */}
+      <div className="space-y-4 max-w-xl">
+        <h1 className="font-heading font-bold text-4xl md:text-5xl text-fg tracking-tight">
+          Recruitment Contest
+        </h1>
+        <p className="text-fg-muted font-sans text-sm md:text-base leading-relaxed">
+          Fill out the form below to register for our next scheduled Recruitment Contest. Our lectures and tutorials are open to everyone, but official club membership is earned by qualifying.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
       {/* Left side: Eligibility & Info */}
       <div className="lg:col-span-5 space-y-6">
         <h2 className="font-heading font-semibold text-2xl text-fg tracking-wide">
@@ -230,6 +242,7 @@ export default function JoinForm() {
           </button>
         </div>
       </form>
+    </div>
     </div>
   );
 }

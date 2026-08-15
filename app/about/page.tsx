@@ -89,7 +89,7 @@ export default function About() {
       try {
         const handles = membersData.map((m) => m.handle).filter(Boolean);
         const users = await fetchCFUsers(handles);
-        const userMap = new Map(users.map((u) => [u.handle.toLowerCase(), u]));
+        const userMap = new Map(users.map((u: CodeforcesUser): [string, CodeforcesUser] => [u.handle.toLowerCase(), u]));
         setCfUsers(userMap);
       } catch (e) {
         console.error("Failed to load team ratings from Codeforces API", e);
