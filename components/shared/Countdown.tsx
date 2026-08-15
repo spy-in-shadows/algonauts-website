@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 interface CountdownProps {
-  target: string; // ISO date string
+  target: string | number;
 }
 
 export default function Countdown({ target }: CountdownProps) {

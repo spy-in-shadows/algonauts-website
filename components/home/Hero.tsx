@@ -9,23 +9,12 @@ export default function Hero() {
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-16 md:py-24">
       {/* Background logo watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0">
-        <svg
-          viewBox="0 0 100 100"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-[85vw] max-w-[650px] aspect-square text-fg opacity-[0.04] transform -translate-y-10 rotate-6"
+        <img
+          src="/logo.png"
+          alt=""
+          className="w-[85vw] max-w-[650px] aspect-square object-contain opacity-[0.04] transform -translate-y-10 rotate-6"
           aria-hidden="true"
-        >
-          <path
-            d="M50 10 L20 90 H38 L50 38 C53 45 56 52 62 62 C70 74 78 82 88 90 H70 C62 82 56 72 53 60 C50 48 50 32 50 10 Z"
-            fill="currentColor"
-          />
-          <path
-            d="M54 55 C58 64 62 76 66 90 H56 C52 78 49 68 54 55 Z"
-            fill="currentColor"
-            opacity="0.6"
-          />
-        </svg>
+        />
       </div>
 
       <div className="max-w-[1280px] w-full mx-auto px-6 md:px-8 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 items-center">

@@ -1,9 +1,37 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import problemData from "@/data/problem-of-week.json";
 import Countdown from "../shared/Countdown";
 import RatingColorTag from "../shared/RatingColorTag";
 import { ExternalLink, Flame } from "lucide-react";
 
 export default function ProblemOfWeek() {
+  const [targetTime, setTargetTime] = useState<string | number>(problemData.countdownTarget);
+  const [contestName, setContestName] = useState<string>("Next Codeforces Contest");
+
+  useEffect(() => {
+    fetch("https://codeforces.com/api/contest.list?gym=false")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "OK" && Array.isArray(data.result)) {
+          // Filter for upcoming contests (phase is BEFORE or relativeTimeSeconds is negative)
+          const upcoming = data.result
+            .filter((c: any) => c.phase === "BEFORE" || c.relativeTimeSeconds < 0)
+            .sort((a: any, b: any) => a.startTimeSeconds - b.startTimeSeconds);
+
+          if (upcoming.length > 0) {
+            const nextContest = upcoming[0];
+            setTargetTime(nextContest.startTimeSeconds * 1000);
+            setContestName(nextContest.name);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching Codeforces contest list:", err);
+      });
+  }, []);
+
   return (
     <section className="py-20 md:py-28 max-w-[1280px] mx-auto px-6 md:px-8">
       <div className="bg-bg-elevated border border-border rounded-xl p-8 md:p-12 relative overflow-hidden">
@@ -57,16 +85,16 @@ export default function ProblemOfWeek() {
 
           {/* Countdown Side */}
           <div className="lg:col-span-5 bg-bg border border-border rounded-lg p-6 md:p-8 flex flex-col items-center justify-center text-center space-y-6">
-            <div className="space-y-1">
-              <h4 className="font-heading font-semibold text-sm tracking-widest text-fg uppercase">
-                Next Contest Starts In
+            <div className="space-y-1.5 w-full">
+              <h4 className="font-heading font-semibold text-sm tracking-wider text-accent uppercase line-clamp-2 px-2" title={contestName}>
+                {contestName}
               </h4>
-              <p className="text-xs text-fg-muted font-sans">
-                Prepare your templates. The countdown is live.
+              <p className="text-xs text-fg-muted font-sans uppercase tracking-widest text-[10px] font-semibold opacity-70">
+                Starts In
               </p>
             </div>
 
-            <Countdown target={problemData.countdownTarget} />
+            <Countdown target={targetTime} />
           </div>
         </div>
       </div>

@@ -79,16 +79,16 @@ const LEGEND_RATINGS = [900, 1300, 1500, 1700, 2100];
 // SVG Notch bullet styling (Section 3.4)
 const CustomNotchBullet = () => (
   <svg
-    viewBox="0 0 100 100"
+    viewBox="0 0 24 24"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className="w-2.5 h-2.5 text-accent shrink-0 inline-block mr-3 mt-1.5"
+    stroke="currentColor"
+    strokeWidth="3"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="w-3 h-3 text-accent shrink-0 inline-block mr-3 mt-1.5"
     aria-hidden="true"
   >
-    <path
-      d="M50 10 L20 90 H38 L50 38 C53 45 56 52 62 62 C70 74 78 82 88 90 H70 C62 82 56 72 53 60 C50 48 50 32 50 10 Z"
-      fill="currentColor"
-    />
+    <polyline points="9 18 15 12 9 6" />
   </svg>
 );
 
