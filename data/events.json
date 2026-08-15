@@ -11,25 +11,25 @@
   ],
   "past": [
     {
-      "id": "past-group-1",
-      "date": "2026-05-14",
-      "name": "NST-ADYPU Group Contest (Round 684398)",
-      "winners": ["Active Members"],
-      "editorialUrl": "https://codeforces.com/group/OpRo6ek5FO/contest/684398/standings/groupmates/true"
-    },
-    {
       "id": "past-group-2",
-      "date": "2026-06-12",
-      "name": "NST-ADYPU Group Contest (Round 707916)",
-      "winners": ["Active Members"],
+      "date": "1 Aug, 2026",
+      "name": "Welcome Back Contest",
+      "winners": ["KrishnaSrivastava01"],
       "editorialUrl": "https://codeforces.com/group/OpRo6ek5FO/contest/707916/standings/groupmates/true"
     },
     {
       "id": "past-syndicate",
-      "date": "2026-04-26",
+      "date": "26 April, 2026",
       "name": "The SYNDICATE",
       "winners": ["Team Recoil"],
       "editorialUrl": "/events/the-syndicate"
+    },
+    {
+      "id": "past-group-1",
+      "date": "10 April, 2026",
+      "name": "Squid Game Contest",
+      "winners": ["adypu team 10"],
+      "editorialUrl": "https://codeforces.com/group/OpRo6ek5FO/contest/684398/standings/groupmates/true"
     }
   ]
 }
