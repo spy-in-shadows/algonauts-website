@@ -102,29 +102,23 @@ export async function getLeaderboardData(
   // Sort by rating descending
   assembled.sort((a, b) => b.rating - a.rating);
 
-  // 3. Fetch rating history for ALL members in sequential batches of 4 with 300ms delay
-  // Each fetch is individually cached by Next.js — repeat builds are near-instant
-  const BATCH_SIZE = 4;
-  const BATCH_DELAY_MS = 300;
+  // 3. Fetch rating history ONLY for club members (not all org handles)
+  // This keeps us well under CF's rate limit (~13 requests vs 40+).
+  // Done fully sequentially with 500ms between each to avoid 429s at build time.
+  // Each fetch is cached by Next.js so repeat revalidations are instant.
+  const clubMembers = assembled.filter((m) => m.role === "Algonauts Member");
   const historyMap = new Map<string, CodeforcesRatingChange[]>();
 
-  for (let i = 0; i < assembled.length; i += BATCH_SIZE) {
-    const batch = assembled.slice(i, i + BATCH_SIZE);
-    const batchResults = await Promise.all(
-      batch.map(async (member) => {
-        try {
-          const history = await fetchCFRatingHistory(member.handle);
-          return { handle: member.handle.toLowerCase(), history };
-        } catch (e) {
-          console.warn(`History fetch failed for ${member.handle}:`, e);
-          return { handle: member.handle.toLowerCase(), history: [] as CodeforcesRatingChange[] };
-        }
-      })
-    );
-    for (const r of batchResults) historyMap.set(r.handle, r.history);
-    if (i + BATCH_SIZE < assembled.length) {
-      await new Promise((resolve) => setTimeout(resolve, BATCH_DELAY_MS));
+  for (const member of clubMembers) {
+    try {
+      const history = await fetchCFRatingHistory(member.handle);
+      historyMap.set(member.handle.toLowerCase(), history);
+    } catch (e) {
+      console.warn(`History fetch failed for ${member.handle}:`, e);
+      historyMap.set(member.handle.toLowerCase(), []);
     }
+    // 500ms between requests — comfortably under CF's 5 req/sec limit
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
   const lastUpdatedTime = new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" });
