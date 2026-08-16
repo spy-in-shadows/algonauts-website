@@ -27,8 +27,13 @@ const TIMELINE = [
     description: "Two teams qualified for the ICPC Regionals, with our top team achieving a spot in the top 200 standings.",
   },
   {
+    date: "2025–26",
+    title: "🏆 Best Club of the Year",
+    description: "Algonauts was recognised as the Best Club of the Year 2025–26 at NST-ADYPU, awarded for outstanding contributions to the campus coding culture.",
+  },
+  {
     date: "July 2026",
-    title: "13 Core members",
+    title: "13 Core Members",
     description: "Expanded our community network, launching dedicated learning tracks for beginners and intermediate candidates.",
   },
 ];
@@ -156,6 +161,51 @@ export default function About() {
             <p className="text-fg-muted text-sm font-sans leading-relaxed">
               Advanced members regularly coordinate tutorials and review problem-sets, providing support for juniors climbing the ranks.
             </p>
+          </div>
+        </section>
+
+        {/* Best Club Award Section */}
+        <section className="space-y-8">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 text-accent font-mono text-[10px] uppercase tracking-wider rounded">
+              <Award size={12} />
+              <span>2025–26 Recognition</span>
+            </div>
+            <h2 className="font-heading font-semibold text-2xl md:text-3xl text-fg tracking-wide">
+              🏆 Best Club of the Year
+            </h2>
+            <p className="text-fg-muted text-sm font-sans max-w-2xl leading-relaxed">
+              Algonauts was awarded the <strong className="text-fg">Best Club of the Year 2025–26</strong> at Newton School of Technology - ADYPU, recognising our outstanding contributions to the campus coding culture, student mentorship, and competitive programming excellence.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+              className="rounded-xl overflow-hidden border border-border bg-bg-elevated/20"
+            >
+              <img
+                src="/awards/best-club1.jpg"
+                alt="Algonauts Best Club Award 2025-26"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="rounded-xl overflow-hidden border border-border bg-bg-elevated/20"
+            >
+              <img
+                src="/awards/best-club2.jpg"
+                alt="Algonauts Best Club Award Ceremony 2025-26"
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
           </div>
         </section>
 

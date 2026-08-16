@@ -102,14 +102,12 @@ export async function getLeaderboardData(
   // Sort by rating descending
   assembled.sort((a, b) => b.rating - a.rating);
 
-  // 3. Fetch rating history ONLY for club members (not all org handles)
-  // This keeps us well under CF's rate limit (~13 requests vs 40+).
-  // Done fully sequentially with 500ms between each to avoid 429s at build time.
-  // Each fetch is cached by Next.js so repeat revalidations are instant.
-  const clubMembers = assembled.filter((m) => m.role === "Algonauts Member");
+  // 3. Fetch rating history for ALL handles, fully sequentially with 250ms between each.
+  // 250ms = 4 req/sec — safely under CF's 5 req/sec limit, no batching needed.
+  // Each fetch is cached by Next.js so repeat revalidations skip the network call entirely.
   const historyMap = new Map<string, CodeforcesRatingChange[]>();
 
-  for (const member of clubMembers) {
+  for (const member of assembled) {
     try {
       const history = await fetchCFRatingHistory(member.handle);
       historyMap.set(member.handle.toLowerCase(), history);
@@ -117,8 +115,7 @@ export async function getLeaderboardData(
       console.warn(`History fetch failed for ${member.handle}:`, e);
       historyMap.set(member.handle.toLowerCase(), []);
     }
-    // 500ms between requests — comfortably under CF's 5 req/sec limit
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 250));
   }
 
   const lastUpdatedTime = new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" });
