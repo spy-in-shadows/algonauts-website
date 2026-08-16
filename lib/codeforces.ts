@@ -102,14 +102,14 @@ export async function getLeaderboardData(
   // Sort by rating descending
   assembled.sort((a, b) => b.rating - a.rating);
 
-  // 3. Fetch rating history for handles that actually have a rating (unrated = no history).
-  // Sequential at 300ms intervals = ~3 req/sec, safely under CF's 5 req/sec limit.
-  // Skipping unrated handles cuts requests from ~40 to ~20 and keeps build under 60s.
-  // Each fetch is cached by Next.js so repeat revalidations are instant.
-  const ratedHandles = assembled.filter((m) => m.rating > 0);
+  // 3. Fetch rating history for the top 15 rated handles (sorted by rating desc above).
+  // Guarantees build stays under Next.js 60s page-gen limit: 15 × ~1.3s ≈ 20s max.
+  // Unrated handles (rating = 0) are skipped — they have no contest history anyway.
+  // Each fetch is cached by Next.js so ISR revalidations are near-instant on repeat.
+  const toFetch = assembled.filter((m) => m.rating > 0).slice(0, 15);
   const historyMap = new Map<string, CodeforcesRatingChange[]>();
 
-  for (const member of ratedHandles) {
+  for (const member of toFetch) {
     try {
       const history = await fetchCFRatingHistory(member.handle);
       historyMap.set(member.handle.toLowerCase(), history);
