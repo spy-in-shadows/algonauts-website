@@ -56,10 +56,27 @@ export async function fetchCFRatingHistory(handle: string): Promise<CodeforcesRa
   return json.result as CodeforcesRatingChange[];
 }
 
+export async function getLatestFinishedContestId(): Promise<number> {
+  try {
+    const res = await fetch("https://codeforces.com/api/contest.list?gym=false", {
+      next: { revalidate: 600 },
+    });
+    if (!res.ok) return 0;
+    const json = (await res.json()) as { status: string; result: { id: number; phase: string }[] };
+    if (json.status !== "OK") return 0;
+    const finished = json.result.filter((c) => c.phase === "FINISHED");
+    return finished.length > 0 ? finished[0].id : 0;
+  } catch (e) {
+    console.warn("Failed to get latest contest ID:", e);
+    return 0;
+  }
+}
+
 // Batch-fetch and process all leaderboard members, combining org group handles
 export async function getLeaderboardData(
   members: { name: string; handle: string; role: string; linkedin?: string }[],
-  orgHandles: string[]
+  orgHandles: string[],
+  options?: { fetchAll?: boolean; delayMs?: number }
 ): Promise<LeaderboardMember[]> {
   const teamHandles = members.map((m) => m.handle.toLowerCase()).filter(Boolean);
   const orgHandlesClean = orgHandles.map((h) => h.toLowerCase()).filter(Boolean);
@@ -102,11 +119,12 @@ export async function getLeaderboardData(
   // Sort by rating descending
   assembled.sort((a, b) => b.rating - a.rating);
 
-  // 3. Fetch rating history for the top 15 rated handles (sorted by rating desc above).
-  // Guarantees build stays under Next.js 60s page-gen limit: 15 × ~1.3s ≈ 20s max.
-  // Unrated handles (rating = 0) are skipped — they have no contest history anyway.
-  // Each fetch is cached by Next.js so ISR revalidations are near-instant on repeat.
-  const toFetch = assembled.filter((m) => m.rating > 0).slice(0, 15);
+  // 3. Fetch rating history:
+  // If fetchAll is true (in background jobs/blob seeding), fetch for ALL rated handles.
+  // Otherwise (build-time fallback), only fetch top 15 to stay within 20s.
+  const ratedMembers = assembled.filter((m) => m.rating > 0);
+  const toFetch = options?.fetchAll ? ratedMembers : ratedMembers.slice(0, 15);
+  const delay = options?.delayMs ?? (options?.fetchAll ? 400 : 300);
   const historyMap = new Map<string, CodeforcesRatingChange[]>();
 
   for (const member of toFetch) {
@@ -117,7 +135,7 @@ export async function getLeaderboardData(
       console.warn(`History fetch failed for ${member.handle}:`, e);
       historyMap.set(member.handle.toLowerCase(), []);
     }
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
   const lastUpdatedTime = new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" });
