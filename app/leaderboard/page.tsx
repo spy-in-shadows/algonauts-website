@@ -1,23 +1,22 @@
 import Navbar from "@/components/nav/Navbar";
 import Footer from "@/components/nav/Footer";
 import LeaderboardTable from "@/components/leaderboard/LeaderboardTable";
-import membersData from "@/data/members.json";
-import orgHandles from "@/data/org-handles.json";
-import { getLeaderboardData } from "@/lib/codeforces";
+import { LeaderboardMember } from "@/lib/codeforces";
 import { readLeaderboardBlob } from "@/lib/leaderboard-blob";
+import cachedLeaderboard from "@/data/leaderboard-cache.json";
 
-// ISR: recheck blob at most once every 5 minutes (reads blob in <10ms)
+// ISR: recheck blob storage at most once every 5 minutes
 export const revalidate = 300;
 
 export default async function Leaderboard() {
-  // 1. Try reading from persistent Netlify Blob storage (populated after contests)
+  // 1. Try reading from persistent Netlify Blob storage (populated after contests by background worker)
   const blobData = await readLeaderboardBlob();
   
-  // 2. If blob exists, use cached members; otherwise fall back to build-time fetch
-  const members =
+  // 2. If blob exists and has data, use it. Otherwise, use full 194-member pre-cached baseline dataset!
+  const members: LeaderboardMember[] =
     blobData && blobData.members && blobData.members.length > 0
       ? blobData.members
-      : await getLeaderboardData(membersData, orgHandles);
+      : (cachedLeaderboard as LeaderboardMember[]);
 
   return (
     <>
