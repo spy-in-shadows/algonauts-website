@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import problemData from "@/data/problem-of-week.json";
+import { getProblemOfTheWeek } from "@/lib/problem-of-week";
 import Countdown from "../shared/Countdown";
 import RatingColorTag from "../shared/RatingColorTag";
 import { ExternalLink, Flame } from "lucide-react";
 
 export default function ProblemOfWeek() {
-  const [targetTime, setTargetTime] = useState<string | number>(problemData.countdownTarget);
+  const problem = getProblemOfTheWeek();
+  const [targetTime, setTargetTime] = useState<string | number>(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const [contestName, setContestName] = useState<string>("Next Codeforces Contest");
 
   useEffect(() => {
@@ -46,12 +47,12 @@ export default function ProblemOfWeek() {
                 <Flame size={12} />
                 <span>Problem of the Week</span>
               </div>
-              <RatingColorTag rating={problemData.rating} showName={true} />
+              <RatingColorTag rating={problem.rating} showName={true} />
             </div>
 
             <div className="space-y-3">
               <h3 className="font-heading font-bold text-2xl md:text-3xl text-fg tracking-wide">
-                {problemData.title}
+                {problem.title}
               </h3>
               <p className="text-fg-muted font-sans text-sm md:text-base max-w-xl leading-relaxed">
                 Analyze constraints, find the invariants, and optimize. Submit your solutions directly on Codeforces to rank up.
@@ -60,7 +61,7 @@ export default function ProblemOfWeek() {
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 pt-2">
-              {problemData.tags.map((tag) => (
+              {problem.tags.map((tag) => (
                 <span
                   key={tag}
                   className="px-2.5 py-0.5 bg-bg border border-border text-fg-muted font-mono text-[10px] md:text-xs rounded hover:border-accent/40 transition-colors"
@@ -72,7 +73,7 @@ export default function ProblemOfWeek() {
 
             <div className="pt-4">
               <a
-                href={problemData.url}
+                href={problem.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-bg hover:bg-accent/90 transition-all font-heading font-semibold text-xs md:text-sm rounded"
