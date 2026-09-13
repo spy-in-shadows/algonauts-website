@@ -3,8 +3,6 @@ import { getStore } from "@netlify/blobs";
 import membersData from "../../data/members.json" with { type: "json" };
 import orgHandles from "../../data/org-handles.json" with { type: "json" };
 
-// ─── Types (duplicated here to avoid Next.js module resolution in plain TS) ──
-
 interface CodeforcesUser {
   handle: string;
   rating?: number;
@@ -46,37 +44,41 @@ interface LeaderboardBlobData {
   lastContestId: number;
 }
 
-// ─── CF helpers ──────────────────────────────────────────────────────────────
-
 async function fetchCFUsers(handles: string[]): Promise<CodeforcesUser[]> {
   if (handles.length === 0) return [];
   const url = `https://codeforces.com/api/user.info?handles=${handles.join(";")}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`CF user.info failed: ${res.status}`);
-  const json = await res.json() as { status: string; result: CodeforcesUser[] };
+  const json = (await res.json()) as { status: string; result: CodeforcesUser[] };
   if (json.status !== "OK") throw new Error(`CF API error`);
   return json.result;
 }
 
 async function fetchCFRatingHistory(handle: string): Promise<CodeforcesRatingChange[]> {
-  const url = `https://codeforces.com/api/user.rating?handle=${handle}`;
-  const res = await fetch(url);
-  if (!res.ok) return [];
-  const json = await res.json() as { status: string; result: CodeforcesRatingChange[] };
-  if (json.status !== "OK") return [];
-  return json.result;
+  try {
+    const url = `https://codeforces.com/api/user.rating?handle=${handle}`;
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const json = (await res.json()) as { status: string; result: CodeforcesRatingChange[] };
+    if (json.status !== "OK") return [];
+    return json.result;
+  } catch (e) {
+    return [];
+  }
 }
 
 async function getLatestFinishedContestId(): Promise<number> {
-  const res = await fetch("https://codeforces.com/api/contest.list?gym=false");
-  if (!res.ok) return 0;
-  const json = await res.json() as { status: string; result: { id: number; phase: string }[] };
-  if (json.status !== "OK") return 0;
-  const finished = json.result.filter((c) => c.phase === "FINISHED");
-  return finished.length > 0 ? finished[0].id : 0;
+  try {
+    const res = await fetch("https://codeforces.com/api/contest.list?gym=false");
+    if (!res.ok) return 0;
+    const json = (await res.json()) as { status: string; result: { id: number; phase: string }[] };
+    if (json.status !== "OK") return 0;
+    const finished = json.result.filter((c) => c.phase === "FINISHED");
+    return finished.length > 0 ? finished[0].id : 0;
+  } catch (e) {
+    return 0;
+  }
 }
-
-// ─── Full leaderboard fetch (no timeout limits here — this is a background fn) 
 
 async function buildLeaderboardData(): Promise<LeaderboardMember[]> {
   const teamHandles = (membersData as { handle: string }[]).map((m) => m.handle.toLowerCase()).filter(Boolean);
@@ -115,15 +117,14 @@ async function buildLeaderboardData(): Promise<LeaderboardMember[]> {
 
   assembled.sort((a, b) => b.rating - a.rating);
 
-  // Fetch history for all rated handles — no timeout constraint here!
-  const ratedHandles = assembled.filter((m) => m.rating > 0);
   const historyMap = new Map<string, CodeforcesRatingChange[]>();
 
-  for (const member of ratedHandles) {
+  for (let i = 0; i < assembled.length; i++) {
+    const member = assembled[i];
     const history = await fetchCFRatingHistory(member.handle);
     historyMap.set(member.handle.toLowerCase(), history);
-    // 400ms between requests — well under CF's 5 req/sec limit
-    await new Promise((r) => setTimeout(r, 400));
+    // 220ms strictly serial delay — zero rate limits on CF across 194 handles
+    await new Promise((r) => setTimeout(r, 220));
   }
 
   const lastUpdatedTime = new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" });
@@ -137,37 +138,31 @@ async function buildLeaderboardData(): Promise<LeaderboardMember[]> {
   });
 }
 
-// ─── Handler ─────────────────────────────────────────────────────────────────
-
 export const handler: Handler = async () => {
-  console.log("[refresh-leaderboard] Starting scheduled check...");
+  console.log("[refresh-leaderboard-background] Starting background check...");
 
   try {
     const store = getStore("leaderboard");
 
-    // 1. Get the latest finished contest ID from CF
     const latestContestId = await getLatestFinishedContestId();
-    console.log(`[refresh-leaderboard] Latest finished contest: ${latestContestId}`);
+    console.log(`[refresh-leaderboard-background] Latest finished contest: ${latestContestId}`);
 
-    // 2. Read existing blob to compare
     let existingData: LeaderboardBlobData | null = null;
     try {
-      existingData = await store.get("data", { type: "json" }) as LeaderboardBlobData | null;
+      existingData = (await store.get("data", { type: "json" })) as LeaderboardBlobData | null;
     } catch {
       // blob doesn't exist yet
     }
 
     const lastContestId = existingData?.lastContestId ?? 0;
-    console.log(`[refresh-leaderboard] Last stored contest: ${lastContestId}`);
+    console.log(`[refresh-leaderboard-background] Last stored contest: ${lastContestId}`);
 
-    // 3. If no new contest and blob exists, skip fetch
-    if (existingData && latestContestId <= lastContestId) {
-      console.log("[refresh-leaderboard] No new contest detected. Skipping fetch.");
-      return { statusCode: 200, body: "No new contest. Data unchanged." };
+    if (existingData && latestContestId > 0 && latestContestId <= lastContestId) {
+      console.log("[refresh-leaderboard-background] No new contest detected. Skipping fetch.");
+      return { statusCode: 200, body: "No new contest." };
     }
 
-    // 4. New contest (or first run) — fetch full data
-    console.log("[refresh-leaderboard] New contest detected or first run. Fetching all data...");
+    console.log("[refresh-leaderboard-background] Fetching fresh Codeforces data for all handles...");
     const members = await buildLeaderboardData();
 
     const blobData: LeaderboardBlobData = {
@@ -177,14 +172,14 @@ export const handler: Handler = async () => {
     };
 
     await store.setJSON("data", blobData);
-    console.log(`[refresh-leaderboard] Blob updated with ${members.length} members.`);
+    console.log(`[refresh-leaderboard-background] Blob successfully updated with ${members.length} members.`);
 
     return {
       statusCode: 200,
-      body: `Updated ${members.length} members. Latest contest: ${latestContestId}`,
+      body: `Updated ${members.length} members.`,
     };
   } catch (err) {
-    console.error("[refresh-leaderboard] Error:", err);
+    console.error("[refresh-leaderboard-background] Error:", err);
     return { statusCode: 500, body: "Refresh failed" };
   }
 };

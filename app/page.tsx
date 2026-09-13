@@ -10,9 +10,28 @@ import Footer from "@/components/nav/Footer";
 import { getAllPosts } from "@/lib/blog";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import membersData from "@/data/members.json";
+import { LeaderboardMember } from "@/lib/codeforces";
+import { readLeaderboardBlob } from "@/lib/leaderboard-blob";
+import cachedLeaderboard from "@/data/leaderboard-cache.json";
 
-export default function Home() {
+export const revalidate = 300;
+
+export default async function Home() {
   const recentPosts = getAllPosts().slice(0, 3);
+
+  // 1. Get leaderboard data from Netlify Blob or static cache
+  const blobData = await readLeaderboardBlob();
+  const allMembers: LeaderboardMember[] =
+    blobData && blobData.members && blobData.members.length > 0
+      ? blobData.members
+      : (cachedLeaderboard as LeaderboardMember[]);
+
+  // 2. Filter for core club members and sort by rating descending
+  const clubHandles = new Set(membersData.map((m) => m.handle.toLowerCase()).filter(Boolean));
+  const clubMembers = allMembers
+    .filter((m) => clubHandles.has(m.handle.toLowerCase()) || m.role === "Algonauts Member")
+    .sort((a, b) => b.rating - a.rating);
 
   return (
     <>
@@ -39,8 +58,8 @@ export default function Home() {
         {/* Brand swoosh curve separator */}
         <SectionDivider />
 
-        {/* Top 5 rankings preview */}
-        <LeaderboardPreview />
+        {/* Top rankings preview */}
+        <LeaderboardPreview members={clubMembers} />
 
         {/* Brand swoosh curve separator */}
         <SectionDivider />

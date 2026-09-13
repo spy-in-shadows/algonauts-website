@@ -1,2 +1,2 @@
-[functions."refresh-leaderboard"]
+[functions."refresh-leaderboard-background"]
   schedule = "0 */6 * * *"

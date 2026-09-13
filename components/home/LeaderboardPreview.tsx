@@ -1,34 +1,14 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import membersData from "@/data/members.json";
-import orgHandles from "@/data/org-handles.json";
-import { getLeaderboardData, LeaderboardMember } from "@/lib/codeforces";
+import { LeaderboardMember } from "@/lib/codeforces";
 import { getRatingTier } from "@/lib/ratingColor";
-import { Trophy, ArrowUpRight, ShieldAlert } from "lucide-react";
+import { Trophy, ArrowUpRight } from "lucide-react";
 
-export default function LeaderboardPreview() {
-  const [topMembers, setTopMembers] = useState<LeaderboardMember[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+interface LeaderboardPreviewProps {
+  members: LeaderboardMember[];
+}
 
-  useEffect(() => {
-    async function loadPreview() {
-      try {
-        const data = await getLeaderboardData(membersData, []);
-        // Sort by current rating descending
-        const sorted = data.sort((a, b) => b.rating - a.rating);
-        setTopMembers(sorted);
-      } catch (err) {
-        console.error("Leaderboard preview failed to fetch:", err);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadPreview();
-  }, []);
+export default function LeaderboardPreview({ members }: LeaderboardPreviewProps) {
+  const displayMembers = members.slice(0, 14);
 
   return (
     <section className="py-20 md:py-28 max-w-[1280px] mx-auto px-6 md:px-8">
@@ -61,76 +41,52 @@ export default function LeaderboardPreview() {
             Club Standings
           </h3>
 
-          {loading ? (
-            // Skeleton load state
-            <div className="space-y-4">
-              {[...Array(13)].map((_, i) => (
-                <div key={i} className="flex justify-between items-center py-3 border-b border-border last:border-b-0 animate-pulse">
+          <div className="divide-y divide-border">
+            {displayMembers.map((member, index) => {
+              const tier = getRatingTier(member.rating);
+              return (
+                <div
+                  key={member.handle}
+                  className="flex justify-between items-center py-4 first:pt-0 last:pb-0"
+                >
                   <div className="flex items-center gap-4">
-                    <div className="w-6 h-6 bg-border rounded-full" />
-                    <div className="space-y-1">
-                      <div className="h-4 w-24 bg-border rounded" />
-                      <div className="h-3 w-16 bg-border rounded" />
-                    </div>
-                  </div>
-                  <div className="h-5 w-12 bg-border rounded" />
-                </div>
-              ))}
-            </div>
-          ) : error ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center text-fg-muted space-y-3">
-              <ShieldAlert size={36} className="text-accent-warn" />
-              <p className="text-sm font-sans">
-                Failed to fetch live Codeforces standings. Please view the full leaderboard to review cached stats.
-              </p>
-            </div>
-          ) : (
-            <div className="divide-y divide-border">
-              {topMembers.map((member, index) => {
-                const tier = getRatingTier(member.rating);
-                return (
-                  <div
-                    key={member.handle}
-                    className="flex justify-between items-center py-4 first:pt-0 last:pb-0"
-                  >
-                    <div className="flex items-center gap-4">
-                      {/* Rank number badge */}
-                      <span className="font-mono text-sm font-semibold text-fg-muted w-4">
-                        {index + 1}
-                      </span>
-                      <div>
-                        {/* Member Name */}
-                        <div className="font-sans font-medium text-sm text-fg">
-                          {member.name}
-                        </div>
-                        {/* CF Handle color-coded */}
-                        <a
-                          href={`https://codeforces.com/profile/${member.handle}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={`font-mono text-xs hover:underline ${tier.color}`}
-                        >
-                          {member.handle}
-                        </a>
+                    {/* Rank number badge */}
+                    <span className="font-mono text-sm font-semibold text-fg-muted w-4">
+                      {index + 1}
+                    </span>
+                    <div>
+                      {/* Member Name */}
+                      <div className="font-sans font-medium text-sm text-fg">
+                        {member.name}
                       </div>
-                    </div>
-
-                    {/* Rating score badge */}
-                    <div className="text-right">
-                      <span className="font-mono text-sm font-bold text-fg">
-                        {member.rating || "unrated"}
-                      </span>
-                      <span className="block text-[9px] uppercase tracking-wider text-fg-muted font-sans font-medium">
-                        {tier.name}
-                      </span>
+                      {/* CF Handle color-coded */}
+                      <a
+                        href={`https://codeforces.com/profile/${member.handle}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`font-mono text-xs hover:underline ${tier.color}`}
+                      >
+                        {member.handle}
+                      </a>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
+
+                  {/* Rating score badge */}
+                  <div className="text-right">
+                    <span className="font-mono text-sm font-bold text-fg">
+                      {member.rating || "unrated"}
+                    </span>
+                    <span className="block text-[9px] uppercase tracking-wider text-fg-muted font-sans font-medium">
+                      {tier.name}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
