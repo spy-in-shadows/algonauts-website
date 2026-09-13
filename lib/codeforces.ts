@@ -150,3 +150,70 @@ export async function getLeaderboardData(
   });
 }
 
+// Live merged leaderboard: fetches fresh CF user info in ONE batch request (1.5s)
+// and overlays current ratings, maxRatings, and ranks on top of the comprehensive history dataset.
+export async function getLiveMergedLeaderboardData(
+  members: { name: string; handle: string; role: string; linkedin?: string }[],
+  orgHandles: string[]
+): Promise<LeaderboardMember[]> {
+  const cachedLeaderboard = (await import("@/data/leaderboard-cache.json")).default as LeaderboardMember[];
+  const teamHandles = members.map((m) => m.handle.toLowerCase()).filter(Boolean);
+  const orgHandlesClean = orgHandles.map((h) => h.toLowerCase()).filter(Boolean);
+  const allHandles = Array.from(new Set([...teamHandles, ...orgHandlesClean]));
+
+  if (allHandles.length === 0) return cachedLeaderboard;
+
+  try {
+    // 1. Fetch live CF user info in ONE batch call (~1.5s) — Next.js caches this fetch
+    const users = await fetchCFUsers(allHandles);
+    const userMap = new Map(users.map((u) => [u.handle.toLowerCase(), u]));
+    const memberMap = new Map(members.map((m) => [m.handle.toLowerCase(), m]));
+    const cachedMap = new Map(cachedLeaderboard.map((c) => [c.handle.toLowerCase(), c]));
+
+    const assembled: LeaderboardMember[] = allHandles.map((handle) => {
+      const cfUser = userMap.get(handle.toLowerCase());
+      const member = memberMap.get(handle.toLowerCase());
+      const cachedEntry = cachedMap.get(handle.toLowerCase());
+
+      let name = handle;
+      if (member) {
+        name = member.name;
+      } else if (cfUser) {
+        const parts = [cfUser.firstName, cfUser.lastName].filter(Boolean);
+        if (parts.length > 0) name = parts.join(" ");
+      } else if (cachedEntry) {
+        name = cachedEntry.name;
+      }
+
+      const rating = cfUser?.rating ?? cachedEntry?.rating ?? 0;
+      const maxRating = cfUser?.maxRating ?? cachedEntry?.maxRating ?? 0;
+      const rank = cfUser?.rank ?? cachedEntry?.rank ?? "unrated";
+      const avatarUrl = cfUser?.titlePhoto ?? cfUser?.avatar ?? cachedEntry?.avatarUrl;
+      const history = cachedEntry?.history ?? [];
+      const delta = cachedEntry?.delta ?? 0;
+
+      return {
+        name,
+        role: member ? "Algonauts Member" : "Club Competitor",
+        handle: cfUser?.handle || cachedEntry?.handle || handle,
+        rating,
+        maxRating,
+        rank,
+        avatarUrl,
+        linkedin: member?.linkedin || cachedEntry?.linkedin || "",
+        delta,
+        history,
+      };
+    });
+
+    assembled.sort((a, b) => b.rating - a.rating);
+
+    const lastUpdatedTime = new Date().toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata" });
+    return assembled.map((m) => ({ ...m, lastUpdated: lastUpdatedTime }));
+  } catch (e) {
+    console.warn("Live CF merge failed, falling back to cached leaderboard:", e);
+    return cachedLeaderboard;
+  }
+}
+
+

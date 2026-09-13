@@ -11,21 +11,16 @@ import { getAllPosts } from "@/lib/blog";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import membersData from "@/data/members.json";
-import { LeaderboardMember } from "@/lib/codeforces";
-import { readLeaderboardBlob } from "@/lib/leaderboard-blob";
-import cachedLeaderboard from "@/data/leaderboard-cache.json";
+import orgHandles from "@/data/org-handles.json";
+import { getLiveMergedLeaderboardData } from "@/lib/codeforces";
 
 export const revalidate = 300;
 
 export default async function Home() {
   const recentPosts = getAllPosts().slice(0, 3);
 
-  // 1. Get leaderboard data from Netlify Blob or static cache
-  const blobData = await readLeaderboardBlob();
-  const allMembers: LeaderboardMember[] =
-    blobData && blobData.members && blobData.members.length > 0
-      ? blobData.members
-      : (cachedLeaderboard as LeaderboardMember[]);
+  // 1. Get live merged leaderboard data for all handles
+  const allMembers = await getLiveMergedLeaderboardData(membersData, orgHandles);
 
   // 2. Filter for core club members and sort by rating descending
   const clubHandles = new Set(membersData.map((m) => m.handle.toLowerCase()).filter(Boolean));

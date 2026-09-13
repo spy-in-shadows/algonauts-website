@@ -1,22 +1,15 @@
 import Navbar from "@/components/nav/Navbar";
 import Footer from "@/components/nav/Footer";
 import LeaderboardTable from "@/components/leaderboard/LeaderboardTable";
-import { LeaderboardMember } from "@/lib/codeforces";
-import { readLeaderboardBlob } from "@/lib/leaderboard-blob";
-import cachedLeaderboard from "@/data/leaderboard-cache.json";
+import membersData from "@/data/members.json";
+import orgHandles from "@/data/org-handles.json";
+import { getLiveMergedLeaderboardData } from "@/lib/codeforces";
 
-// ISR: recheck blob storage at most once every 5 minutes
+// ISR: re-fetch live ratings every 5 minutes (single fast 1.5s CF batch request)
 export const revalidate = 300;
 
 export default async function Leaderboard() {
-  // 1. Try reading from persistent Netlify Blob storage (populated after contests by background worker)
-  const blobData = await readLeaderboardBlob();
-  
-  // 2. If blob exists and has data, use it. Otherwise, use full 194-member pre-cached baseline dataset!
-  const members: LeaderboardMember[] =
-    blobData && blobData.members && blobData.members.length > 0
-      ? blobData.members
-      : (cachedLeaderboard as LeaderboardMember[]);
+  const members = await getLiveMergedLeaderboardData(membersData, orgHandles);
 
   return (
     <>
